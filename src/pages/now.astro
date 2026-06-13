@@ -1,0 +1,28 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getEntry, render } from "astro:content";
+
+const page = await getEntry("pages", "now");
+if (!page) {
+  throw new Error("Now page content not found.");
+}
+
+const { Content } = await render(page);
+---
+
+<BaseLayout
+  title={page.data.title}
+  description={page.data.description ?? "Current focus areas."}
+  path="/now"
+>
+  <article>
+    <header class="mb-10">
+      <h1 class="font-serif text-3xl font-bold tracking-tight text-foreground">
+        {page.data.title}
+      </h1>
+    </header>
+    <div class="prose-page">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

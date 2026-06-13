@@ -1,0 +1,123 @@
+---
+import {
+  MEDIA_APPEARANCES_INITIAL_COUNT,
+  mediaAppearances,
+} from "../data/media-appearances";
+
+const hiddenCount = Math.max(
+  0,
+  mediaAppearances.length - MEDIA_APPEARANCES_INITIAL_COUNT,
+);
+---
+
+<section
+  class="mt-12 not-prose"
+  data-media-appearances
+  data-initial-count={MEDIA_APPEARANCES_INITIAL_COUNT}
+>
+  <h2 class="font-serif text-xl font-bold text-foreground mb-6">
+    Media Appearances
+  </h2>
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-6">
+    {
+      mediaAppearances.map((video, index) => (
+        <a
+          href={`https://www.youtube.com/watch?v=${video.youtubeId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class:list={[
+            "group flex flex-col",
+            index >= MEDIA_APPEARANCES_INITIAL_COUNT && "hidden",
+          ]}
+          data-media-appearance-card
+          data-index={index}
+        >
+          <div class="relative w-full aspect-video bg-muted rounded overflow-hidden mb-2">
+            <img
+              src={`https://img.youtube.com/vi/${video.youtubeId}/mqdefault.jpg`}
+              alt={video.title}
+              width="320"
+              height="180"
+              loading="lazy"
+              class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+            />
+            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/25">
+              <div class="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center shadow">
+                <svg
+                  class="w-3.5 h-3.5 text-foreground ml-0.5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <p class="text-xs font-medium text-foreground leading-snug group-hover:underline line-clamp-2">
+            {video.title}
+          </p>
+          <p class="text-[11px] text-muted-foreground/60 mt-0.5">
+            {video.date.slice(0, 4)}
+          </p>
+        </a>
+      ))
+    }
+  </div>
+
+  {
+    hiddenCount > 0 && (
+      <>
+        <button
+          type="button"
+          class="mt-6 text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
+          data-media-expand
+        >
+          Show {hiddenCount} more
+        </button>
+        <button
+          type="button"
+          class="mt-6 hidden text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-2"
+          data-media-collapse
+        >
+          Show less
+        </button>
+      </>
+    )
+  }
+</section>
+
+<script>
+  const sections = document.querySelectorAll("[data-media-appearances]");
+
+  for (const section of sections) {
+    const cards = section.querySelectorAll("[data-media-appearance-card]");
+    const expandBtn = section.querySelector("[data-media-expand]");
+    const collapseBtn = section.querySelector("[data-media-collapse]");
+    const initialCount = Number(
+      section.getAttribute("data-initial-count") ?? "0",
+    );
+
+    if (!expandBtn || !collapseBtn) continue;
+
+    expandBtn.addEventListener("click", () => {
+      for (const card of cards) {
+        card.classList.remove("hidden");
+      }
+      expandBtn.classList.add("hidden");
+      collapseBtn.classList.remove("hidden");
+    });
+
+    collapseBtn.addEventListener("click", () => {
+      for (const card of cards) {
+        const index = Number(card.getAttribute("data-index"));
+        if (index >= initialCount) {
+          card.classList.add("hidden");
+        }
+      }
+      collapseBtn.classList.add("hidden");
+      expandBtn.classList.remove("hidden");
+    });
+  }
+</script>

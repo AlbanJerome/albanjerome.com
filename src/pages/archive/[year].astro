@@ -1,0 +1,32 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostList from "../../components/PostList.astro";
+import { getArchiveYears, getWritingByYear } from "../../lib/posts";
+
+export async function getStaticPaths() {
+  const years = await getArchiveYears();
+  return years.map((item) => ({
+    params: { year: String(item.year) },
+    props: { year: item.year },
+  }));
+}
+
+const { year } = Astro.props;
+const posts = await getWritingByYear(year);
+---
+
+<BaseLayout
+  title={`Archive ${year}`}
+  description={`Archived essays from ${year}.`}
+  path={`/archive/${year}`}
+>
+  <p class="text-sm text-muted-foreground mb-4">
+    <a href="/archive" class="hover:text-foreground transition-colors">← Archive</a>
+  </p>
+  <h1 class="font-serif text-3xl font-bold tracking-tight mb-2">{year}</h1>
+  <p class="text-sm text-muted-foreground mb-10">
+    {posts.length} {posts.length === 1 ? "essay" : "essays"}
+  </p>
+
+  {posts.length > 0 ? <PostList posts={posts} /> : <p class="text-sm text-muted-foreground">No essays found.</p>}
+</BaseLayout>

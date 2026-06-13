@@ -1,0 +1,107 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostList from "../../components/PostList.astro";
+import { render } from "astro:content";
+import {
+  getAllWriting,
+  getRelatedWriting,
+  getPostDescription,
+  toSlug,
+  formatDate,
+  themeToSlug,
+} from "../../lib/posts";
+import { canonicalUrl } from "../../lib/seo";
+import type { WritingEntry } from "../../lib/posts";
+
+export async function getStaticPaths() {
+  const posts = await getAllWriting();
+  return posts.map((post) => ({
+    params: { slug: toSlug(post.id) },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props as { post: WritingEntry };
+const { Content } = await render(post);
+const related = await getRelatedWriting(post);
+const slug = toSlug(post.id);
+const date = formatDate(post.data.date);
+const path = `/writing/${slug}`;
+const description = getPostDescription(post);
+---
+
+<BaseLayout
+  title={post.data.title}
+  description={description}
+  path={path}
+  ogType="article"
+  ogImage={post.data.ogImage}
+  publishedTime={post.data.date.toISOString()}
+  narrow
+>
+  <article>
+    <header class="mb-12 md:mb-14 pb-10 border-b border-border">
+      <h1 class="font-serif text-[1.875rem] md:text-[2.25rem] font-bold tracking-tight leading-[1.15] mb-5 text-foreground">
+        {post.data.title}
+      </h1>
+      <div class="meta-row text-[13px]">
+        {date && <time datetime={post.data.date.toISOString()}>{date}</time>}
+        {post.data.source && <span>{post.data.source}</span>}
+        {
+          post.data.themes.map((theme) => (
+            <a href={`/themes/${themeToSlug(theme)}`} class="text-accent hover:underline underline-offset-2">
+              {theme}
+            </a>
+          ))
+        }
+      </div>
+      {
+        post.data.original_url && (
+          <p class="mt-5 text-[13px]">
+            <a
+              href={post.data.original_url}
+              class="text-muted-foreground hover:text-foreground transition-colors duration-150"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Originally published here →
+            </a>
+          </p>
+        )
+      }
+    </header>
+
+    <div class="prose-essay">
+      <Content />
+    </div>
+  </article>
+
+  {
+    related.length > 0 && (
+      <section class="mt-16 md:mt-20 pt-12 border-t border-border">
+        <p class="section-label mb-2">Continue reading</p>
+        <h2 class="font-serif text-lg font-bold tracking-tight mb-6">More in this theme</h2>
+        <PostList posts={related} />
+      </section>
+    )
+  }
+
+  <script
+    is:inline
+    type="application/ld+json"
+    set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: post.data.title,
+      description,
+      datePublished: post.data.date.toISOString(),
+      author: {
+        "@type": "Person",
+        name: "Alban Jerome",
+        url: "https://albanjerome.com",
+      },
+      mainEntityOfPage: canonicalUrl(path),
+      url: canonicalUrl(path),
+    })}
+  />
+</BaseLayout>

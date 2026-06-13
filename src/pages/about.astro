@@ -1,0 +1,70 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getEntry } from "astro:content";
+import { Image } from "astro:assets";
+import { renderAboutSections, splitAboutBody } from "../lib/about";
+import albanJerome from "../assets/alban-jerome.png";
+
+const page = await getEntry("pages", "about");
+if (!page) {
+  throw new Error("About page content not found.");
+}
+
+const sections = splitAboutBody(page.body ?? "");
+const html = await renderAboutSections(sections);
+---
+
+<BaseLayout
+  title={page.data.title}
+  description={page.data.description ?? "About Alban Jerome — capital, governance, and cross-border networks."}
+  path="/about"
+>
+  <article>
+    <div class="grid grid-cols-1 md:grid-cols-[1fr_200px] gap-x-12 gap-y-8">
+      <div class="md:col-span-2">
+        <h1 class="font-serif text-3xl font-bold tracking-tight text-foreground">
+          About Me
+        </h1>
+      </div>
+
+      {
+        html.opening && (
+          <div class="prose-page" set:html={html.opening} />
+        )
+      }
+
+      <div class="flex justify-start md:justify-end">
+        <div
+          class="w-40 h-48 md:w-[200px] md:h-[240px] rounded-md border border-border/50 bg-muted overflow-hidden flex-shrink-0"
+        >
+          <Image
+            src={albanJerome}
+            alt="Alban Jerome"
+            width={200}
+            height={240}
+            class="w-full h-full object-cover"
+            loading="eager"
+          />
+        </div>
+      </div>
+
+      {
+        html.focus && (
+          <div
+            class="md:col-span-2 border-t border-border pt-8 prose-page"
+            set:html={html.focus}
+          />
+        )
+      }
+
+      {
+        html.secondary && (
+          <div
+            class="md:col-span-2 border-t border-border pt-8 prose-page"
+            set:html={html.secondary}
+          />
+        )
+      }
+    </div>
+  </article>
+</BaseLayout>

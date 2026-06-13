@@ -1,0 +1,118 @@
+---
+import { Image } from "astro:assets";
+import albanJerome from "../assets/alban-jerome.png";
+import ajLogo from "../assets/aj-logo.png";
+
+const channels = [
+  {
+    href: "https://www.linkedin.com/in/albanjerome",
+    label: "LinkedIn",
+    handle: "linkedin.com/in/albanjerome",
+    image: albanJerome,
+    imageAlt: "Alban Jerome",
+    imageClass: "object-cover",
+    imageBoxClass: "w-20 h-20",
+    imageWidth: 80,
+    imageHeight: 80,
+    layout: "row" as const,
+    description:
+      "LinkedIn tends to host shorter, situational observations drawn from current capital environments.",
+  },
+  {
+    href: "https://albanjerome.substack.com",
+    label: "Substack",
+    handle: "albanjerome.substack.com",
+    image: ajLogo,
+    imageAlt: "Alban Jerome — Writing",
+    imageClass: "object-contain",
+    imageBoxClass: "w-12 h-12",
+    imageWidth: 48,
+    imageHeight: 48,
+    layout: "stacked" as const,
+    description:
+      "Substack is where I develop longer-form thinking around governance, venture architecture, cross-border structuring, and institutional durability.",
+  },
+];
+---
+
+<div class="my-10 md:my-12 flex flex-col gap-6 md:gap-7 not-prose">
+  {
+    channels.map((channel) =>
+      channel.layout === "row" ? (
+        <a
+          href={channel.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="block group"
+        >
+          <div class="flex items-center gap-6 p-5 md:p-6 border border-border rounded-md transition-colors duration-150 hover:bg-muted/60">
+            <div
+              class:list={[
+                channel.imageBoxClass,
+                "rounded-md border border-border/50 bg-muted overflow-hidden flex-shrink-0",
+              ]}
+            >
+              <Image
+                src={channel.image}
+                alt={channel.imageAlt}
+                width={channel.imageWidth}
+                height={channel.imageHeight}
+                class:list={["w-full h-full", channel.imageClass]}
+              />
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-serif text-lg font-semibold text-foreground group-hover:text-accent transition-colors duration-150">
+                Alban Jerome
+              </p>
+              <p class="text-sm text-muted-foreground mt-0.5">
+                {channel.label} ·
+                <span class="text-muted-foreground/60 ml-1">{channel.handle}</span>
+              </p>
+              <p class="text-sm text-muted-foreground/80 leading-relaxed mt-2.5">
+                {channel.description}
+              </p>
+            </div>
+          </div>
+        </a>
+      ) : (
+        <a
+          href={channel.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="block group"
+        >
+          <div class="p-6 md:p-7 border border-border rounded-md transition-colors duration-150 hover:bg-muted/60">
+            <div class="flex items-center gap-5 mb-5">
+              <div
+                class:list={[
+                  channel.imageBoxClass,
+                  "rounded-md border border-border/50 bg-muted overflow-hidden flex-shrink-0 flex items-center justify-center",
+                ]}
+              >
+                <Image
+                  src={channel.image}
+                  alt={channel.imageAlt}
+                  width={channel.imageWidth}
+                  height={channel.imageHeight}
+                  class:list={["w-full h-full", channel.imageClass]}
+                />
+              </div>
+              <div>
+                <p class="font-serif text-base font-semibold text-foreground group-hover:text-accent transition-colors duration-150">
+                  Alban Jerome
+                </p>
+                <p class="text-sm text-muted-foreground mt-0.5">
+                  {channel.label} ·
+                  <span class="text-muted-foreground/60 ml-1">{channel.handle}</span>
+                </p>
+              </div>
+            </div>
+            <p class="text-[15px] text-muted-foreground leading-relaxed">
+              {channel.description}
+            </p>
+          </div>
+        </a>
+      ),
+    )
+  }
+</div>

@@ -1,0 +1,36 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostList from "../../components/PostList.astro";
+import {
+  getAllThemes,
+  getWritingByTheme,
+  themeToSlug,
+} from "../../lib/posts";
+
+export async function getStaticPaths() {
+  const themes = await getAllThemes();
+  return themes.map((theme) => ({
+    params: { theme: theme.name },
+    props: { themeName: theme.name },
+  }));
+}
+
+const { themeName } = Astro.props;
+const posts = await getWritingByTheme(themeName);
+---
+
+<BaseLayout
+  title={themeName}
+  description={`Essays on ${themeName} — writing by Alban Jerome.`}
+  path={`/themes/${themeToSlug(themeName)}`}
+>
+  <p class="text-sm text-muted-foreground mb-4">
+    <a href="/themes" class="hover:text-foreground transition-colors">← All themes</a>
+  </p>
+  <h1 class="font-serif text-3xl font-bold tracking-tight mb-2">{themeName}</h1>
+  <p class="text-sm text-muted-foreground mb-10">
+    {posts.length} {posts.length === 1 ? "essay" : "essays"}
+  </p>
+
+  {posts.length > 0 ? <PostList posts={posts} /> : <p class="text-sm text-muted-foreground">No essays found.</p>}
+</BaseLayout>

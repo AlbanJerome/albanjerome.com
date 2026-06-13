@@ -1,0 +1,64 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostList from "../../components/PostList.astro";
+import {
+  getCurrentWriting,
+  getArchiveYears,
+} from "../../lib/posts";
+
+const posts = await getCurrentWriting();
+const years = await getArchiveYears();
+---
+
+<BaseLayout
+  title="Writing"
+  description="Analysis and commentary on capital, governance, and cross-border networks."
+  path="/writing"
+>
+  <header class="mb-12 md:mb-14">
+    <h1 class="page-title mb-3">Writing</h1>
+    <p class="page-lead">
+      Analysis and commentary on capital, governance, and cross-border networks.
+    </p>
+    <p class="mt-4">
+      <a
+        href="/themes"
+        class="text-[13px] text-muted-foreground hover:text-foreground transition-colors duration-150"
+      >
+        Browse by topic →
+      </a>
+    </p>
+  </header>
+
+  <section class="mb-16">
+    <p class="section-label mb-2">Current essays</p>
+    <div class="section-divider mb-1"></div>
+    {posts.length > 0 ? (
+      <PostList posts={posts} showExcerpt />
+    ) : (
+      <p class="text-sm text-muted-foreground py-8">No current posts.</p>
+    )}
+  </section>
+
+  <section>
+    <p class="section-label mb-2">Archive</p>
+    <div class="section-divider mb-6"></div>
+    {
+      years.length > 0 ? (
+        <div class="flex items-center gap-x-6 gap-y-3 flex-wrap">
+          {years.map((item) => (
+            <a
+              href={`/archive/${item.year}`}
+              class="text-[14px] text-muted-foreground hover:text-foreground transition-colors duration-150"
+            >
+              {item.year}
+              <span class="text-muted-foreground/45 ml-1.5 tabular-nums">{item.count}</span>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p class="text-sm text-muted-foreground">No archived posts.</p>
+      )
+    }
+  </section>
+</BaseLayout>

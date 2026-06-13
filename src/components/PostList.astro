@@ -1,0 +1,48 @@
+---
+import { formatDate, toSlug, themeToSlug, getPostExcerpt } from "../lib/posts";
+import type { WritingEntry } from "../lib/posts";
+
+interface Props {
+  posts: WritingEntry[];
+  showExcerpt?: boolean;
+}
+
+const { posts, showExcerpt = false } = Astro.props;
+---
+
+<div>
+  {
+    posts.map((post) => {
+      const slug = toSlug(post.id);
+      const date = formatDate(post.data.date);
+      const primaryTheme = post.data.themes[0];
+
+      return (
+        <article class="post-row group">
+          <a href={`/writing/${slug}`} class="block">
+            <h3 class="post-row-title pr-6 group-hover:text-accent">
+              {post.data.title}
+            </h3>
+          </a>
+          <div class="meta-row mt-2.5">
+            {date && <time datetime={post.data.date.toISOString()}>{date}</time>}
+            {primaryTheme && (
+              <a
+                href={`/themes/${themeToSlug(primaryTheme)}`}
+                class="text-accent hover:underline underline-offset-2"
+              >
+                {primaryTheme}
+              </a>
+            )}
+            {post.data.source && <span>{post.data.source}</span>}
+          </div>
+          {showExcerpt && (
+            <p class="text-[14px] text-muted-foreground leading-[1.7] line-clamp-2 mt-3 max-w-2xl">
+              {getPostExcerpt(post)}
+            </p>
+          )}
+        </article>
+      );
+    })
+  }
+</div>

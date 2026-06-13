@@ -1,0 +1,35 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getAllThemes, themeToSlug } from "../../lib/posts";
+
+const themes = await getAllThemes();
+---
+
+<BaseLayout
+  title="Topic"
+  description="Browse essays by theme — capital, governance, cross-border networks, and more."
+  path="/themes"
+>
+  <h1 class="font-serif text-3xl font-bold tracking-tight mb-2">Topic</h1>
+  <p class="text-sm text-muted-foreground mb-10">
+    Essays organized by recurring themes and ideas.
+  </p>
+
+  <div class="grid gap-4 sm:grid-cols-2">
+    {
+      themes.map((theme) => (
+        <a
+          href={`/themes/${themeToSlug(theme.name)}`}
+          class="group block p-5 border border-border rounded-lg hover:border-accent/40 transition-colors"
+        >
+          <h2 class="font-serif text-lg font-bold group-hover:text-accent transition-colors">
+            {theme.name}
+          </h2>
+          <p class="text-sm text-muted-foreground mt-1">
+            {theme.count} {theme.count === 1 ? "essay" : "essays"}
+          </p>
+        </a>
+      ))
+    }
+  </div>
+</BaseLayout>

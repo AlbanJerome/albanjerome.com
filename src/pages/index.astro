@@ -1,0 +1,72 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import FeaturedPosts from "../components/FeaturedPosts.astro";
+import { Image } from "astro:assets";
+import { getFeaturedWriting, getAllThemes, themeToSlug } from "../lib/posts";
+import { SITE } from "../lib/seo";
+import albanJerome from "../assets/alban-jerome.png";
+
+const { posts: featuredPosts, isCurated } = await getFeaturedWriting(4);
+const themes = await getAllThemes();
+---
+
+<BaseLayout
+  title={SITE.title}
+  description={SITE.description}
+  path="/"
+  includeWebsiteSchema
+>
+  <section class="pt-4 pb-12 md:pt-6 md:pb-16">
+    <div class="flex flex-col md:flex-row items-start gap-10 md:gap-12">
+      <div class="flex-1 min-w-0">
+        <h1 class="font-serif text-[2rem] md:text-[2.5rem] font-bold tracking-tight leading-[1.12] mb-5 text-foreground">
+          {SITE.tagline}
+        </h1>
+        <p class="page-lead">
+          {SITE.subtagline}
+        </p>
+      </div>
+      <div class="w-32 h-32 rounded-md border border-border/50 bg-muted overflow-hidden flex-shrink-0">
+        <Image
+          src={albanJerome}
+          alt="Alban Jerome"
+          width={128}
+          height={128}
+          class="w-full h-full object-cover"
+          loading="eager"
+        />
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <FeaturedPosts posts={featuredPosts} isCurated={isCurated} />
+
+  {
+    themes.length > 0 && (
+      <>
+        <div class="section-divider"></div>
+        <section class="py-14 md:py-16" aria-labelledby="topics-heading">
+          <h2
+            id="topics-heading"
+            class="font-serif text-xl md:text-[1.375rem] font-bold tracking-tight mb-8"
+          >
+            Explore by topic
+          </h2>
+          <div class="flex flex-wrap gap-2.5">
+            {themes.slice(0, 6).map((theme) => (
+              <a
+                href={`/themes/${themeToSlug(theme.name)}`}
+                class="px-3.5 py-1.5 text-[13px] border border-border rounded-full text-muted-foreground hover:text-foreground hover:border-accent/35 hover:bg-muted/40 transition-colors duration-150"
+              >
+                {theme.name}
+                <span class="text-muted-foreground/45 ml-1.5 tabular-nums">{theme.count}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      </>
+    )
+  }
+</BaseLayout>

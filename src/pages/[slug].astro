@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection, getEntry, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const reservedPages = new Set(["now", "contact", "about", "media"]);
+  const pages = await getCollection("pages");
+  return pages
+    .filter((page) => !reservedPages.has(page.id))
+    .map((page) => ({
+      params: { slug: page.id.replace(/\.md$/, "") },
+      props: { id: page.id },
+    }));
+}
+
+const { id } = Astro.props;
+const page = await getEntry("pages", id);
+if (!page) {
+  throw new Error(`Page content not found: ${id}`);
+}
+
+const { Content } = await render(page);
+const slug = page.id.replace(/\.md$/, "");
+---
+
+<BaseLayout
+  title={page.data.title}
+  description={page.data.description}
+  path={`/${slug}`}
+>
+  <article>
+    <header class="mb-10">
+      <h1 class="font-serif text-3xl md:text-4xl font-bold tracking-tight">
+        {page.data.title}
+      </h1>
+    </header>
+    <div class="prose-essay">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

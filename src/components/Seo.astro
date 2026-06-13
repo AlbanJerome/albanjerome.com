@@ -1,0 +1,64 @@
+---
+import {
+  SITE,
+  pageTitle,
+  canonicalUrl,
+  absoluteImage,
+  truncateMetaDescription,
+  type SeoProps,
+} from "../lib/seo";
+
+const {
+  title,
+  description = SITE.description,
+  path = "/",
+  ogType = "website",
+  ogImage,
+  publishedTime,
+  modifiedTime,
+  includeWebsiteSchema = false,
+} = Astro.props as SeoProps;
+
+const resolvedTitle = pageTitle(title);
+const resolvedDescription = truncateMetaDescription(description);
+const url = canonicalUrl(path);
+const image = ogImage ? absoluteImage(ogImage) : absoluteImage();
+---
+
+<title>{resolvedTitle}</title>
+<meta name="description" content={resolvedDescription} />
+<link rel="canonical" href={url} />
+<meta name="generator" content={Astro.generator} />
+
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={resolvedTitle} />
+<meta property="og:description" content={resolvedDescription} />
+<meta property="og:url" content={url} />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:image" content={image} />
+<meta property="og:locale" content={SITE.locale} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content={SITE.twitter} />
+<meta name="twitter:title" content={resolvedTitle} />
+<meta name="twitter:description" content={resolvedDescription} />
+<meta name="twitter:image" content={image} />
+
+{publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+
+{
+  includeWebsiteSchema && (
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: SITE.name,
+        url: SITE.url,
+        description: SITE.description,
+      })}
+    />
+  )
+}

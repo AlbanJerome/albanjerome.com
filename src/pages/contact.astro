@@ -1,0 +1,45 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ContactChannelCards from "../components/ContactChannelCards.astro";
+import { getEntry, render } from "astro:content";
+
+const page = await getEntry("pages", "contact");
+if (!page) {
+  throw new Error("Contact page content not found.");
+}
+
+const { Content } = await render(page);
+const introParagraphs = page.data.intro
+  ? page.data.intro.trim().split(/\n\n+/).filter(Boolean)
+  : [];
+---
+
+<BaseLayout
+  title={page.data.title}
+  description={page.data.description ?? "Get in touch with Alban Jerome."}
+  path="/contact"
+>
+  <article>
+    <header class="mb-8 md:mb-10">
+      <h1 class="font-serif text-3xl font-bold tracking-tight text-foreground">
+        Get in touch
+      </h1>
+    </header>
+
+    {
+      introParagraphs.length > 0 && (
+        <div class="prose-essay mb-2">
+          {introParagraphs.map((paragraph) => (
+            <p>{paragraph}</p>
+          ))}
+        </div>
+      )
+    }
+
+    <ContactChannelCards />
+
+    <div class="prose-essay">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

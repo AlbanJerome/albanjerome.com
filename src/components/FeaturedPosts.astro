@@ -1,0 +1,106 @@
+---
+import {
+  formatDate,
+  toSlug,
+  themeToSlug,
+  getPostExcerpt,
+  type WritingEntry,
+} from "../lib/posts";
+
+interface Props {
+  posts: WritingEntry[];
+  /** When true, section heading reads "Featured"; otherwise "Recent Writing". */
+  isCurated?: boolean;
+}
+
+const { posts, isCurated = false } = Astro.props;
+
+const [hero, ...secondary] = posts;
+const heading = isCurated ? "Featured" : "Recent Writing";
+---
+
+<section class="py-14 md:py-16" aria-labelledby="featured-posts-heading">
+  <div class="flex items-baseline justify-between gap-4 mb-10">
+    <div>
+      <p class="section-label mb-2">Start here</p>
+      <h2
+        id="featured-posts-heading"
+        class="font-serif text-xl md:text-[1.375rem] font-bold tracking-tight"
+      >
+        {heading}
+      </h2>
+    </div>
+    <a
+      href="/writing"
+      class="text-[13px] text-muted-foreground hover:text-foreground transition-colors duration-150 shrink-0"
+    >
+      All writing →
+    </a>
+  </div>
+
+  {
+    hero ? (
+      <div>
+        <article class="mb-10 rounded-xl border border-border bg-card px-6 py-7 md:px-8 md:py-9 shadow-[0_1px_2px_rgba(0,0,0,0.04)] dark:shadow-none border-l-[3px] border-l-accent/60">
+          <a href={`/writing/${toSlug(hero.id)}`} class="group block">
+            <h3 class="font-serif text-[1.375rem] md:text-2xl font-bold tracking-tight leading-[1.25] mb-3 group-hover:text-accent transition-colors duration-150">
+              {hero.data.title}
+            </h3>
+          </a>
+          <div class="meta-row mb-4">
+            {formatDate(hero.data.date) && (
+              <time datetime={hero.data.date.toISOString()}>
+                {formatDate(hero.data.date)}
+              </time>
+            )}
+            {hero.data.themes[0] && (
+              <a
+                href={`/themes/${themeToSlug(hero.data.themes[0])}`}
+                class="text-accent hover:underline underline-offset-2"
+              >
+                {hero.data.themes[0]}
+              </a>
+            )}
+            {hero.data.source && <span>{hero.data.source}</span>}
+          </div>
+          <p class="text-[15px] text-muted-foreground leading-[1.7] line-clamp-3 max-w-2xl">
+            {getPostExcerpt(hero)}
+          </p>
+        </article>
+
+        {secondary.length > 0 && (
+          <div class="space-y-0">
+            {secondary.map((post) => (
+              <article class="post-row group">
+                <a href={`/writing/${toSlug(post.id)}`} class="flex items-baseline justify-between gap-6">
+                  <h3 class="post-row-title flex-1 group-hover:text-accent">
+                    {post.data.title}
+                  </h3>
+                  {formatDate(post.data.date) && (
+                    <time
+                      datetime={post.data.date.toISOString()}
+                      class="text-xs text-muted-foreground whitespace-nowrap shrink-0"
+                    >
+                      {formatDate(post.data.date)}
+                    </time>
+                  )}
+                </a>
+              </article>
+            ))}
+          </div>
+        )}
+      </div>
+    ) : (
+      <p class="text-sm text-muted-foreground">No posts yet.</p>
+    )
+  }
+
+  <div class="mt-10 pt-8 border-t border-border">
+    <a
+      href="/archive"
+      class="text-[13px] text-muted-foreground hover:text-foreground transition-colors duration-150"
+    >
+      Browse the archive →
+    </a>
+  </div>
+</section>

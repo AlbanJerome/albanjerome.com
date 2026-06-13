@@ -1,0 +1,32 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import MediaAppearances from "../components/MediaAppearances.astro";
+import { getEntry, render } from "astro:content";
+
+const page = await getEntry("pages", "media");
+if (!page) {
+  throw new Error("Media page content not found.");
+}
+
+const { Content } = await render(page);
+---
+
+<BaseLayout
+  title={page.data.title}
+  description={page.data.description ?? "Books, papers, media appearances, and events by Alban Jerome."}
+  path="/media"
+>
+  <article>
+    <header class="mb-10">
+      <h1 class="font-serif text-3xl font-bold tracking-tight text-foreground">
+        {page.data.title}
+      </h1>
+    </header>
+
+    <div class="prose-page">
+      <Content />
+    </div>
+
+    <MediaAppearances />
+  </article>
+</BaseLayout>

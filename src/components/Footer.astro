@@ -1,0 +1,33 @@
+---
+import { SITE } from "../lib/seo";
+import { footerNav, footerExternal } from "../data/nav";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-border mt-auto">
+  <div class="max-w-4xl mx-auto px-6 md:px-8 py-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+    <p class="text-[13px] text-muted-foreground">© {year} {SITE.name}</p>
+    <div class="flex items-center gap-5 text-[13px] text-muted-foreground">
+      {
+        footerNav.map((item) => (
+          <a href={item.href} class="hover:text-foreground transition-colors duration-150">
+            {item.label}
+          </a>
+        ))
+      }
+      {
+        footerExternal.map((item) => (
+          <a
+            href={item.href}
+            class="hover:text-foreground transition-colors duration-150"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</footer>
