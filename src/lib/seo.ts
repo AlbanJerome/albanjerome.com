@@ -4,9 +4,9 @@ export const SITE = {
   description:
     "Writing on capital, governance, and cross-border networks.",
   url: "https://albanjerome.com",
-  tagline: "Structure is what satisfies when everything else shifts.",
+  tagline: "The best time to start building something was yesterday, the second best time is Now!",
   subtagline:
-    "Writing on capital, governance, cross-border complexity, and the systems that carry them.",
+    "Scaling Startups | Fundraising | Governance | Venture Strategy",
   locale: "en_US",
   twitter: "@albanjerome",
 } as const;

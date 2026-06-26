@@ -13,8 +13,16 @@ export function splitAboutBody(body: string): AboutSections {
   const focusIdx = body.indexOf(SECTION_FOCUS);
   const secondaryIdx = body.indexOf(SECTION_SECONDARY);
 
-  if (focusIdx === -1 || secondaryIdx === -1) {
+  if (focusIdx === -1) {
     return { opening: body.trim(), focus: "", secondary: "" };
+  }
+
+  if (secondaryIdx === -1) {
+    return {
+      opening: body.slice(0, focusIdx).trim(),
+      focus: body.slice(focusIdx + SECTION_FOCUS.length).trim(),
+      secondary: "",
+    };
   }
 
   return {

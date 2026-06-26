@@ -1,118 +1,43 @@
 ---
-import { Image } from "astro:assets";
-import albanJerome from "../assets/alban-jerome.png";
-import ajLogo from "../assets/aj-logo.png";
-
-const channels = [
+const links = [
   {
     href: "https://www.linkedin.com/in/albanjerome",
     label: "LinkedIn",
-    handle: "linkedin.com/in/albanjerome",
-    image: albanJerome,
-    imageAlt: "Alban Jerome",
-    imageClass: "object-cover",
-    imageBoxClass: "w-20 h-20",
-    imageWidth: 80,
-    imageHeight: 80,
-    layout: "row" as const,
-    description:
-      "LinkedIn tends to host shorter, situational observations drawn from current capital environments.",
+    iconClass: "text-[#0A66C2]",
   },
   {
     href: "https://albanjerome.substack.com",
     label: "Substack",
-    handle: "albanjerome.substack.com",
-    image: ajLogo,
-    imageAlt: "Alban Jerome — Writing",
-    imageClass: "object-contain",
-    imageBoxClass: "w-12 h-12",
-    imageWidth: 48,
-    imageHeight: 48,
-    layout: "stacked" as const,
-    description:
-      "Substack is where I develop longer-form thinking around governance, venture architecture, cross-border structuring, and institutional durability.",
+    iconClass: "text-[#FF6719]",
   },
 ];
 ---
 
-<div class="my-10 md:my-12 flex flex-col gap-6 md:gap-7 not-prose">
+<div class="my-8 md:my-10 flex items-center gap-5 not-prose">
   {
-    channels.map((channel) =>
-      channel.layout === "row" ? (
-        <a
-          href={channel.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="block group"
-        >
-          <div class="flex items-center gap-6 p-5 md:p-6 border border-border rounded-md transition-colors duration-150 hover:bg-muted/60">
-            <div
-              class:list={[
-                channel.imageBoxClass,
-                "rounded-md border border-border/50 bg-muted overflow-hidden flex-shrink-0",
-              ]}
-            >
-              <Image
-                src={channel.image}
-                alt={channel.imageAlt}
-                width={channel.imageWidth}
-                height={channel.imageHeight}
-                class:list={["w-full h-full", channel.imageClass]}
-              />
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="font-serif text-lg font-semibold text-foreground group-hover:text-accent transition-colors duration-150">
-                Alban Jerome
-              </p>
-              <p class="text-sm text-muted-foreground mt-0.5">
-                {channel.label} ·
-                <span class="text-muted-foreground/60 ml-1">{channel.handle}</span>
-              </p>
-              <p class="text-sm text-muted-foreground/80 leading-relaxed mt-2.5">
-                {channel.description}
-              </p>
-            </div>
-          </div>
-        </a>
-      ) : (
-        <a
-          href={channel.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="block group"
-        >
-          <div class="p-6 md:p-7 border border-border rounded-md transition-colors duration-150 hover:bg-muted/60">
-            <div class="flex items-center gap-5 mb-5">
-              <div
-                class:list={[
-                  channel.imageBoxClass,
-                  "rounded-md border border-border/50 bg-muted overflow-hidden flex-shrink-0 flex items-center justify-center",
-                ]}
-              >
-                <Image
-                  src={channel.image}
-                  alt={channel.imageAlt}
-                  width={channel.imageWidth}
-                  height={channel.imageHeight}
-                  class:list={["w-full h-full", channel.imageClass]}
-                />
-              </div>
-              <div>
-                <p class="font-serif text-base font-semibold text-foreground group-hover:text-accent transition-colors duration-150">
-                  Alban Jerome
-                </p>
-                <p class="text-sm text-muted-foreground mt-0.5">
-                  {channel.label} ·
-                  <span class="text-muted-foreground/60 ml-1">{channel.handle}</span>
-                </p>
-              </div>
-            </div>
-            <p class="text-[15px] text-muted-foreground leading-relaxed">
-              {channel.description}
-            </p>
-          </div>
-        </a>
-      ),
-    )
+    links.map((link) => (
+      <a
+        href={link.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={link.label}
+        class:list={[
+          "inline-flex items-center justify-center rounded-md p-2 transition-opacity duration-150 hover:opacity-75",
+          link.iconClass,
+        ]}
+      >
+        {
+          link.label === "LinkedIn" ? (
+            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 114.126 0 2.063 2.063 0 01-2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+            </svg>
+          ) : (
+            <svg class="h-7 w-7" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z" />
+            </svg>
+          )
+        }
+      </a>
+    ))
   }
 </div>
